@@ -41,6 +41,12 @@ class Node:
                 break
         
 
+def print_out(all_nodes):
+    for node in all_nodes:
+        print(f"{node.name}->{node.used_neighbors.name if node.used_neighbors else 'Root'}")
+        #print(f"Node {node.name}: Root={node.root_id}, Cost={node.cost}")
+        #print(f"Used neighbor: {node.used_neighbors.name if node.used_neighbors else 'None'}")
+
 
 A = Node(5,"A")
 B = Node(1,"B")
@@ -92,8 +98,4 @@ while not converged and rounds < all_nodes.__len__():
             converged = False
 
 
-for node in all_nodes:
-    print(f"Node {node.name}: Root={node.root_id}, Cost={node.cost}")
-    print(f"Used neighbor: {node.used_neighbors.name if node.used_neighbors else 'None'}")
-
-
+print_out(all_nodes)
