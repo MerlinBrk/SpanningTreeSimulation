@@ -2,16 +2,19 @@
 class Node:
     def __init__(self, id, name):
         self.id = id                # Eindeutige Knoten-ID
-        self.root_id = id           # Aktuell bekannte Root-ID (initial eigene ID)
         self.name = name            # Name des Knotens (z.B. "A", "B", ...)
+
+        self.root_id = id           # Aktuell bekannte Root-ID (initial eigene ID)
         self.cost = 0               # Aktueller Pfadkostenwert zum Root
+        self.next_hop = None  # Der Nachbar, über den die beste Route zum Root läuft
+
         self.neighbors = []         # Liste von Nachbarn als Tupel (Node, Gewicht)
         self.received_messages = [] # Zwischenspeicher für empfangene Nachrichten
-        self.used_neighbors = None  # Der Nachbar, über den die beste Route zum Root läuft
-
+        
     # Fügt einen Nachbarn mit einem Gewicht hinzu
     def add_neighbor(self, neighbor_node, weight):
         self.neighbors.append((neighbor_node, weight))
+        
 
     # Sendet eine Nachricht an alle Nachbarn mit eigener Root-ID und Kosten
     def send_message(self):
@@ -38,6 +41,9 @@ class Node:
                 self.cost = total_cost
                 updated = True
                 self.add_used_neighbor(neighbor_id)
+            elif root_id == self.root_id and total_cost == self.cost and neighbor_id < self.next_hop.id:
+                updated = True
+                self.add_used_neighbor(neighbor_id);
         # Nachrichten nach der Verarbeitung löschen
         self.received_messages.clear()
         return updated
@@ -46,7 +52,7 @@ class Node:
     def add_used_neighbor(self, node_id):
         for neighbor in self.neighbors:
             if neighbor[0].id == node_id:
-                self.used_neighbors = neighbor[0]
+                self.next_hop = neighbor[0]
                 break
         
 
@@ -54,10 +60,28 @@ class Node:
 def print_out(all_nodes):
     for node in all_nodes:
         # Gibt den Namen des Knotens und seinen "benutzten Nachbarn" aus
-        print(f"{node.name}->{node.used_neighbors.name if node.used_neighbors else 'Root'}")
+        print(f"{node.name}->{node.next_hop.name if node.next_hop else 'Root'}")
         # Alternative Debug-Ausgaben:
         #print(f"Node {node.name}: Root={node.root_id}, Cost={node.cost}")
-        #print(f"Used neighbor: {node.used_neighbors.name if node.used_neighbors else 'None'}")
+        #print(f"Used neighbor: {node.next_hop.name if node.next_hop else 'None'}")
+
+# Hauptfunktion zur Simulation des Spanning Tree Protocols
+def stp_protocol(all_nodes):
+    # Simulationsschleife: Knoten senden Nachrichten und aktualisieren sich, bis Konvergenz
+    converged = False
+    rounds = 0
+    while not converged and rounds <= len(all_nodes):  # Schleife bis alle Knoten stabil sind
+        rounds += 1
+        converged = True
+        # Phase 1: Sende Nachrichten an alle Nachbarn
+        for node in all_nodes:
+            node.send_message()
+        # Phase 2: Aktualisiere Zustände basierend auf empfangenen Nachrichten
+        for node in all_nodes:
+            if node.update_state():
+                converged = False  # Wenn irgendein Knoten aktualisiert wurde, noch nicht konvergiert
+
+    
 
 
 # Erstellung der Knoten im Netzwerk
@@ -82,19 +106,8 @@ E.add_neighbor(F, 2);  F.add_neighbor(E, 2)
 # Liste aller Knoten
 all_nodes = [A, B, C, D, E, F]
 
-# Simulationsschleife: Knoten senden Nachrichten und aktualisieren sich, bis Konvergenz
-converged = False
-rounds = 0
-while not converged and rounds <= len(all_nodes):  # Schleife bis alle Knoten stabil sind
-    rounds += 1
-    converged = True
-    # Phase 1: Sende Nachrichten an alle Nachbarn
-    for node in all_nodes:
-        node.send_message()
-    # Phase 2: Aktualisiere Zustände basierend auf empfangenen Nachrichten
-    for node in all_nodes:
-        if node.update_state():
-            converged = False  # Wenn irgendein Knoten aktualisiert wurde, noch nicht konvergiert
+# Start der Spanning Tree Protocol Simulation
+stp_protocol(all_nodes)
 
-# Ausgabe der finalen Pfade zum Root
+# Ausgabe des finalen Zustands aller Knoten
 print_out(all_nodes)
