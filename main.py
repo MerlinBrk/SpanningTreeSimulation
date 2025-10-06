@@ -1,20 +1,20 @@
+import re
+
+
 # Definition einer Node (Knoten) in einem Netzwerk
 class Node:
     def __init__(self, id, name):
-        self.id = id                # Eindeutige Knoten-ID
-        self.name = name            # Name des Knotens (z.B. "A", "B", ...)
-
-        self.root_id = id           # Aktuell bekannte Root-ID (initial eigene ID)
-        self.cost = 0               # Aktueller Pfadkostenwert zum Root
+        self.id = id  # Eindeutige Knoten-ID
+        self.name = name  # Name des Knotens (z.B. "A", "B", ...)
+        self.root_id = id  # Aktuell bekannte Root-ID (initial eigene ID)
+        self.cost = 0  # Aktueller Pfadkostenwert zum Root
         self.next_hop = None  # Der Nachbar, über den die beste Route zum Root läuft
-
-        self.neighbors = []         # Liste von Nachbarn als Tupel (Node, Gewicht)
-        self.received_messages = [] # Zwischenspeicher für empfangene Nachrichten
+        self.neighbors = []  # Liste von Nachbarn als Tupel (Node, Gewicht)
+        self.received_messages = []  # Zwischenspeicher für empfangene Nachrichten
 
     # Fügt einen Nachbarn mit einem Gewicht hinzu
     def add_neighbor(self, neighbor_node, weight):
         self.neighbors.append((neighbor_node, weight))
-
 
     # Sendet eine Nachricht an alle Nachbarn mit eigener Root-ID und Kosten
     def send_message(self):
@@ -54,7 +54,7 @@ class Node:
             if neighbor[0].id == node_id:
                 self.next_hop = neighbor[0]
                 break
-        
+
 
 # Funktion zur Ausgabe des aktuellen Zustands aller Knoten
 def print_out(all_nodes):
@@ -62,8 +62,9 @@ def print_out(all_nodes):
         # Gibt den Namen des Knotens und seinen "benutzten Nachbarn" aus
         print(f"{node.name}->{node.next_hop.name if node.next_hop else 'Root'}")
         # Alternative Debug-Ausgaben:
-        #print(f"Node {node.name}: Root={node.root_id}, Cost={node.cost}")
-        #print(f"Used neighbor: {node.next_hop.name if node.next_hop else 'None'}")
+        # print(f"Node {node.name}: Root={node.root_id}, Cost={node.cost}")
+        # print(f"Used neighbor: {node.next_hop.name if node.next_hop else 'None'}")
+
 
 # Hauptfunktion zur Simulation des Spanning Tree Protocols
 def stp_protocol(all_nodes):
@@ -80,7 +81,6 @@ def stp_protocol(all_nodes):
         for node in all_nodes:
             if node.update_state():
                 converged = False  # Wenn irgendein Knoten aktualisiert wurde, noch nicht konvergiert
-
 
 
 nodes = {}
