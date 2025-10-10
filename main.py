@@ -35,21 +35,21 @@ class Node:
                 self.root_id = root_id
                 self.cost = total_cost
                 updated = True
-                self.add_used_neighbor(neighbor_id)
+                self.add_next_hop(neighbor_id)
             # Fall 2: Gleiches Root, aber niedrigere Kosten -> bessere Route wählen
             elif root_id == self.root_id and total_cost < self.cost:
                 self.cost = total_cost
                 updated = True
-                self.add_used_neighbor(neighbor_id)
+                self.add_next_hop(neighbor_id)
             elif root_id == self.root_id and total_cost == self.cost and neighbor_id < self.next_hop.id:
                 updated = True
-                self.add_used_neighbor(neighbor_id);
+                self.add_next_hop(neighbor_id);
         # Nachrichten nach der Verarbeitung löschen
         self.received_messages.clear()
         return updated
 
-    # Setzt den Nachbarn, über den die Route zum Root läuft
-    def add_used_neighbor(self, node_id):
+    # Setzt den Next Hop, über den die Route zum Root läuft
+    def add_next_hop(self, node_id):
         for neighbor in self.neighbors:
             if neighbor[0].id == node_id:
                 self.next_hop = neighbor[0]

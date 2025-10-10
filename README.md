@@ -1,4 +1,5 @@
 # SpanningTreeSimulation
+
 Simulation of a Spanning Tree Protocol
 
 ## Übersicht
@@ -15,35 +16,35 @@ Jeder **Knoten (Node)** repräsentiert dabei einen Switch, und jede **Kante (Edg
 
 Die Klasse `Node` modelliert einen Netzwerkknoten mit folgenden Attributen:
 
-* **id** – eindeutige numerische ID des Knotens
-* **name** – symbolischer Name (z. B. "A", "B", "C")
-* **root_id** – aktuell bekannte Root-ID (initial die eigene ID)
-* **cost** – aktuelle Kosten bis zum Root
-* **next_hop** – der Nachbar, über den der beste Pfad zum Root führt
-* **neighbors** – Liste der Nachbarn als Tupel *(Node, Gewicht)*
-* **received_messages** – Puffer für empfangene Nachrichten
+- **id** – eindeutige numerische ID des Knotens
+- **name** – symbolischer Name (z. B. "A", "B", "C")
+- **root_id** – aktuell bekannte Root-ID (initial die eigene ID)
+- **cost** – aktuelle Kosten bis zum Root
+- **next_hop** – der Nachbar, über den der beste Pfad zum Root führt
+- **neighbors** – Liste der Nachbarn als Tupel _(Node, Gewicht)_
+- **received_messages** – Puffer für empfangene Nachrichten
 
 #### Wichtige Methoden:
 
-* **`add_neighbor(neighbor_node, weight)`**
+- **`add_neighbor(neighbor_node, weight)`**
   Fügt eine bidirektionale Verbindung zu einem Nachbarn mit gegebenem Gewicht hinzu.
 
-* **`send_message()`**
+- **`send_message()`**
   Sendet die aktuelle Root-ID und die Kosten an alle Nachbarn.
 
-* **`receive_message(root_id, cost, weight, neighbor_id)`**
+- **`receive_message(root_id, cost, weight, neighbor_id)`**
   Speichert eingehende Informationen von Nachbarn zwischen.
 
-* **`update_state()`**
+- **`update_state()`**
   Vergleicht empfangene Nachrichten mit dem aktuellen Zustand:
 
-  * Wenn ein kleinerer `root_id` erkannt wird, wird ein neuer Root gewählt.
-  * Wenn derselbe Root, aber geringere Kosten entdeckt werden, wird der Pfad angepasst.
-  * Bei gleichen Kosten wird (zur Stabilität) der Nachbar mit kleinerer ID bevorzugt.
+  - Wenn ein kleinerer `root_id` erkannt wird, wird ein neuer Root gewählt.
+  - Wenn derselbe Root, aber geringere Kosten entdeckt werden, wird der Pfad angepasst.
+  - Bei gleichen Kosten wird (zur Stabilität) der Nachbar mit kleinerer ID bevorzugt.
 
   Gibt `True` zurück, wenn sich der Zustand des Knotens geändert hat.
 
-* **`add_used_neighbor(node_id)`**
+- **`add_next_hop(node_id)`**
   Setzt den Nachbarn, über den aktuell die beste Route zum Root läuft.
 
 ---
@@ -114,5 +115,5 @@ C->B
 
 Dieses Programm dient zum **Verständnis und zur Visualisierung des STP-Mechanismus**:
 
-* Es zeigt, wie sich Knoten gegenseitig Informationen über den Root und die Pfadkosten austauschen.
-* Es demonstriert den Prozess der **Konvergenz zu einem stabilen, schleifenfreien Netzwerkbaum**.
+- Es zeigt, wie sich Knoten gegenseitig Informationen über den Root und die Pfadkosten austauschen.
+- Es demonstriert den Prozess der **Konvergenz zu einem stabilen, schleifenfreien Netzwerkbaum**.
